@@ -9,19 +9,19 @@ const authorization = require("../middleware/authorization")
 router.post("/register",validInfo,  async(req, res) => {
     try {
         //1. destructure req.body___________________________________________________
-        const{name, email, password} = req.body;
+        const{name, email, password} = req.body; //req body wird aufgeteilt
 
 
         //2. check if user exists____________________________________________________ 
-        const user = await pool.query("select * from users where user_email = $1", [email]) // returns[] if email doesent exist
+        const user = await pool.query("select * from users where user_email = $1", [email]) // keiner oder einer
         
-        if (user.rows.length !==0) {    // if email exist
+        if (user.rows.length !==0) {    // wenn keiner da ist, dann sende nachricht 
             return res.status(410).send("user already exists")
         }
 
 
         //bcrypt the password________________________________________________________
-        const saltRound = 10;
+        const saltRound = 10;                               // nutzer vorhanden, also pw hashen
         const salt = await bcrypt.genSalt(saltRound)
         const bcryptPassword = await bcrypt.hash (password, salt)
 
@@ -50,6 +50,7 @@ router.post("/login", validInfo, async (req, res) => {
 
         const {email, password} = req.body;
 
+        
         //2. checkt if user doesent exist(if not then throw err)
 
         const user = await pool.query("select * from users where user_email = $1", [email]);

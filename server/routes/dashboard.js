@@ -16,6 +16,4 @@ router.get("/", authorization, async(req, res) =>{          //muss autorisiert s
         
     }
 })
-
-
 module.exports = router;
